@@ -2,13 +2,10 @@ import tkinter
 from dataclasses import dataclass
 
 class GameView:
-    _TITLE = 'CrazyGameDev'
-    _WINDOW_SIZE = '500x500'
-
-    def __init__(self):
+    def __init__(self, title, window_size):
         self._root = tkinter.Tk()
-        self._root.title(self._TITLE)
-        self._root.geometry(self._WINDOW_SIZE)
+        self._root.title(title)
+        self._root.geometry(window_size)
 
         self._game_control_buttons = ButtonsHolder(
             self._root,
@@ -59,7 +56,7 @@ class ButtonsHolder:
             self._frame.rowconfigure(row, weight=1)
             for column in range(columns_num):
 	            self._frame.columnconfigure(column, weight=1)
-                
+
         for btn in buttons:
             self.add_button(btn)
 
