@@ -16,11 +16,11 @@ class GameView:
             rows_num=1,
             columns_num=2,
             buttons=[
-                Button(
+                ButtonMeta(
                     Coords(0, 0),
                     'new'
                 ),
-                Button(
+                ButtonMeta(
                     Coords(0, 1),
                     'quit'
                 ),
@@ -28,30 +28,17 @@ class GameView:
         )
         self._game_process_buttons = ButtonsHolder(
             self._root,
-            1, 4, 4,
+            row=1,
+            rows_num=4,
+            columns_num=4,
             buttons=[
-                Button(
+                ButtonMeta(
                     Coords(x // 4, x % 4),
                     str(x),
                 )
                 for x in range(0, 15)
             ]
         )
-
-        for btn in [
-            Button(
-                    self._game_control_buttons,
-                    Coords(0, 0),
-                    'new'
-                ),
-                Button(
-                    self._game_control_buttons,
-                    Coords(0, 1),
-                    'quit'
-                ),
-            ]:
-            
-
         self._root.mainloop()
 
 
@@ -62,43 +49,48 @@ class ButtonsHolder:
         row,
         rows_num,
         columns_num,
+        buttons=[]
     ):
-        self._buttons = []
         self._frame = tkinter.Frame(root)
         self._frame.grid(row=row)
+        self._buttons = []
 
         for row in range(rows_num):
             self._frame.rowconfigure(row, weight=1)
             for column in range(columns_num):
 	            self._frame.columnconfigure(column, weight=1)
-
+                
+        for btn in buttons:
+            self.add_button(btn)
 
     def add_button(self, btn):
-        self._buttons.append(btn)
+        self._buttons.append(
+            {
+                'source': tkinter.Button(self._frame, text=btn.text, command=btn.click),
+                'meta': btn,
+            }
+        )
         self._refresh_view()
 
     def _refresh_view(self):
         for btn in self._buttons:
-            btn.draw()
+            btn_meta = btn['meta']
+            btn_source = btn['source']
+            btn_source.grid(row=btn_meta.row, column=btn_meta.column)
 
 
-class Button:
-    def __init__(self, frame, coords, text):
-        self._row = coords.row
-        self._column = coords.column
-        self._text = text
-        self._btn = tkinter.Button(frame, text=self._text, command=self._click)
-        self.draw()
-
-    def draw(self):
-        self._btn.grid(row=self._row, column=self._column)
+class ButtonMeta:
+    def __init__(self, coords, text):
+        self.row = coords.row
+        self.column = coords.column
+        self.text = text
 
     @property
     def coords(self):
-        return Coords(self._row, self._column)
+        return Coords(self.row, self.column)
 
-    def _click(self):
-        print(f'btn {self._text} clicked')
+    def click(self):
+        print(f'btn {self.text} clicked')
 
 @dataclass
 class Coords:
