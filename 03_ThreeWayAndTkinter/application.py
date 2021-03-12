@@ -12,6 +12,7 @@ class Application:
             rang=self._RANG,
         )
         self._game_view = GameView(
+            rang=self._RANG,
             title=self._TITLE,
             window_size=self._WINDOW_SIZE,
             game_process=self._game_process,

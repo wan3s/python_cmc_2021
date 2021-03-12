@@ -25,18 +25,6 @@ class GameProcess:
                     handler=lambda id=id: self._button_click(id)
                 )
 
-    def _button_click(self, id):
-        empty_btn = self.buttons[consts.EMPTY_BUTTON_ID]
-        cur_btn = self.buttons[id]
-        if (
-            abs(empty_btn.coords.row - cur_btn.coords.row) +
-            abs(empty_btn.coords.column - cur_btn.coords.column)
-        ) > 1:
-            return
-        tmp_empty_btn_coords = empty_btn.coords
-        empty_btn.coords = cur_btn.coords
-        cur_btn.coords = tmp_empty_btn_coords
-
     def check_finish(self):
         right_border = self._rang * self._rang
         for i in range(right_border):
@@ -50,3 +38,15 @@ class GameProcess:
                 return False
         
         return True
+
+    def _button_click(self, id):
+        empty_btn = self.buttons[consts.EMPTY_BUTTON_ID]
+        cur_btn = self.buttons[id]
+        if (
+            abs(empty_btn.coords.row - cur_btn.coords.row) +
+            abs(empty_btn.coords.column - cur_btn.coords.column)
+        ) > 1:
+            return
+        tmp_empty_btn_coords = empty_btn.coords
+        empty_btn.coords = cur_btn.coords
+        cur_btn.coords = tmp_empty_btn_coords

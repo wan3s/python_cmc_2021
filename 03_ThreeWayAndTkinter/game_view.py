@@ -7,13 +7,14 @@ from common import Coords
 import consts
 
 class GameView:
-    def __init__(self, title, window_size, game_process):
+    def __init__(self, rang, title, window_size, game_process):
         self._root = tkinter.Tk()
         self._root.title(title)
         self._root.geometry(window_size)
         self._root.rowconfigure(0, weight=1)
         self._root.columnconfigure(0, weight=1)
         self._root.rowconfigure(1, weight=4)
+        self._rang = rang
         self._game_process = game_process
 
         self._game_control_buttons_holder = ButtonsHolder(
@@ -37,8 +38,8 @@ class GameView:
             self._root,
             self,
             row=1,
-            rows_num=4,
-            columns_num=4,
+            rows_num=self._rang,
+            columns_num=self._rang,
             buttons=self._game_process.buttons
         )
         self.draw()
@@ -93,10 +94,6 @@ class ButtonsHolder:
             'meta': btn,
         }
 
-    def new_buttons(self, buttons):
-        for id, btn in buttons.items():
-            self.add_button(id, btn)
-
     def refresh_view(self):
         for id, btn in self._buttons.items():
             if id == consts.EMPTY_BUTTON_ID:
@@ -108,6 +105,10 @@ class ButtonsHolder:
                 column=btn_meta.coords.column,
                 sticky=consts.STICKY_ALL
             )
+
+    def new_buttons(self, buttons):
+        for id, btn in buttons.items():
+            self.add_button(id, btn)
 
     def clean_frame(self):
         for btn in self._frame.winfo_children():
