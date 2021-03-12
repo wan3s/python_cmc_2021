@@ -8,7 +8,6 @@ class Application:
     _RANG = 4
 
     def __init__(self):
-        print('Application init')
         self._game_process = GameProcess(
             rang=self._RANG,
         )

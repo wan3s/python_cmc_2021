@@ -1,4 +1,5 @@
 import tkinter
+import tkinter.messagebox as mb
 
 from common import ButtonMeta
 from common import Coords
@@ -7,7 +8,6 @@ import consts
 
 class GameView:
     def __init__(self, title, window_size, game_process):
-        print('GameView init')
         self._root = tkinter.Tk()
         self._root.title(title)
         self._root.geometry(window_size)
@@ -18,6 +18,7 @@ class GameView:
 
         self._game_control_buttons_holder = ButtonsHolder(
             self._root,
+            self,
             row=0, 
             rows_num=1,
             columns_num=2,
@@ -34,6 +35,7 @@ class GameView:
         )
         self._game_process_buttons_holder = ProcessButtonsHolder(
             self._root,
+            self,
             row=1,
             rows_num=4,
             columns_num=4,
@@ -43,12 +45,10 @@ class GameView:
         self._root.mainloop()
 
     def draw(self):
-        print('GameView::draw')
         self._game_control_buttons_holder.refresh_view()
         self._game_process_buttons_holder.refresh_view()
 
     def _new_button_handler(self):
-        print('new game will be started')
         self._game_process_buttons_holder.clean_frame()
         self._game_process.arrange_buttons()
         self._game_process_buttons_holder.new_buttons(
@@ -57,7 +57,6 @@ class GameView:
         self._game_process_buttons_holder.refresh_view()
 
     def _quit_button_handler(self):
-        print('procces terminated')
         self._root.quit()
         self._root.destroy()
 
@@ -66,12 +65,13 @@ class ButtonsHolder:
     def __init__(
         self,
         root,
+        game_view,
         row,
         rows_num,
         columns_num,
-        buttons
+        buttons,
     ):
-        print('ButtonsHolder init')
+        self._game_view = game_view
         self._frame = tkinter.LabelFrame(root)
         self._frame.grid(row=row, sticky=consts.STICKY_ALL)
         self._buttons = {}
@@ -108,7 +108,6 @@ class ButtonsHolder:
                 column=btn_meta.coords.column,
                 sticky=consts.STICKY_ALL
             )
-            print(f'draw btn {id} {btn_meta}')
 
     def clean_frame(self):
         for btn in self._frame.winfo_children():
@@ -129,3 +128,9 @@ class ProcessButtonsHolder(ButtonsHolder):
     def _btn_click(self, btn_handler):
         btn_handler()
         self.refresh_view()
+        if self._game_view._game_process.check_finish():
+            mb.showinfo(
+                'You win',
+                'You win! Click ok to start new game.',
+            )
+            self._game_view._new_button_handler()

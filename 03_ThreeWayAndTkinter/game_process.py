@@ -8,7 +8,6 @@ import consts
 
 class GameProcess:
     def __init__(self, rang,):
-        print('GameProcess init')
         self._rang = rang
         self.arrange_buttons()
 
@@ -17,7 +16,6 @@ class GameProcess:
         rang = self._rang
         ids = list(range(rang * rang))
         shuffle(ids)
-        print(f'^^^^^^^^^^^^^^^^ {ids}')
         ids = (x for x in ids)
         for row in range(rang):
             for column in range(rang):
@@ -28,7 +26,6 @@ class GameProcess:
                 )
 
     def _button_click(self, id):
-        print(f'>>>>>>> btn {id} clicked')
         empty_btn = self.buttons[consts.EMPTY_BUTTON_ID]
         cur_btn = self.buttons[id]
         if (
@@ -40,20 +37,17 @@ class GameProcess:
         empty_btn.coords = cur_btn.coords
         cur_btn.coords = tmp_empty_btn_coords
 
-        self._check_finish()
-
-    def _check_finish(self):
-        for i in range(self._rang * self._rang):
-            if i == consts.EMPTY_BUTTON_ID:
-                continue
-
-            cur_row = self.buttons[i].coords.row
-            cur_column = self.buttons[i].coords.column
-
+    def check_finish(self):
+        right_border = self._rang * self._rang
+        for i in range(right_border):
+            cur_id = (i + 1) % right_border
+            cur_row = self.buttons[cur_id].coords.row
+            cur_column = self.buttons[cur_id].coords.column
             if (
-                cur_row != (i - 1) // self._rang or
-                cur_column != (i - 1) % self._rang
+                cur_row != i // self._rang or
+                cur_column != i % self._rang
             ):
-                return
-            print('You win')
+                return False
+        
+        return True
 
