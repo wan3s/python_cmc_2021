@@ -15,8 +15,5 @@ class Application:
         self._game_view = GameView(
             title=self._TITLE,
             window_size=self._WINDOW_SIZE,
-            game_process_buttons=self._game_process.buttons
+            game_process=self._game_process,
         )
-
-    def arrange_buttons(self):
-        return self._game_process.arrange_buttons()
