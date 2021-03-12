@@ -50,4 +50,3 @@ class GameProcess:
                 return False
         
         return True
-
